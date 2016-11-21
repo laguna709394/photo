@@ -14,14 +14,15 @@ public class RobertsEdgeDetect {
     int size;  //图像大小
     int gradientThreshold = -1;//判断时用到的阈值
     BufferedImage outBinary;//输出的边缘图像
+
     public RobertsEdgeDetect(int threshold) {
         gradientThreshold = threshold;
     }
 
 
-    public void readImage(String imageName) throws IOException {
-        File imageFile = new File(imageName);
-        BufferedImage bufferedImage = ImageIO.read(imageFile);
+    public void readImage(BufferedImage bufferedImage) throws IOException {
+//        File imageFile = new File(imageName);
+//        BufferedImage bufferedImage = ImageIO.read(imageFile);
         width = bufferedImage.getWidth();
         height = bufferedImage.getHeight();
         size = width * height;
@@ -41,11 +42,16 @@ public class RobertsEdgeDetect {
             if (gradient[i] > maxGradient)
                 maxGradient = gradient[i];// 获取梯度最大值
         float scaleFactor = 255.0f / maxGradient;// 比例因子用于调整梯度大小
+        String[] graphi = new String[height * width];
         if (gradientThreshold >= 0) {
             for (int y = 1; y < height - 1; ++y)
                 for (int x = 1; x < width - 1; ++x)
-                    if (Math.round(scaleFactor * gradient[y * width + x]) >= gradientThreshold)
+                    if (Math.round(scaleFactor * gradient[y * width + x]) >= gradientThreshold) {
                         outBinary.setRGB(x, y, 0xffffff);// 白色
+                        graphi[y * width + x] = "0";
+                    }else{
+                        graphi[y * width + x] = " ";
+                    }
         }// 对梯度大小进行阈值处理
         else {
             for (int y = 1; y < height - 1; ++y)
@@ -53,12 +59,22 @@ public class RobertsEdgeDetect {
                     outBinary.setRGB(x, y, 0x000000);// 黑色;
         }// //不对梯度大小进行阈值处理, 直接给出用比例因子调整后的值
         writeImage(outBinary, desImageName);
+//        String str = "";
+//        for (int y = 1; y < height - 1; ++y) {
+//            str += "\n";
+//            for (int x = 1; x < width - 1; ++x) {
+//                str += graphi[y * width + x];
+//            }
+//        }
+//        System.out.print(str);
     }
+
     //得到点(x,y)处的灰度值
     public int getGrayPoint(int x, int y) {
         return grayData[y * width + x];
     }
-    //算子计算 图像每个像素点 的 梯度大小
+
+    //Robberts算子计算 图像每个像素点 的 梯度大小
     protected float[] gradientM() {
         float[] mag = new float[size];
         @SuppressWarnings("unused")
@@ -71,11 +87,13 @@ public class RobertsEdgeDetect {
             }
         return mag;
     }
+
     //算子 计算 点(x,y)处的x方向梯度大小
     protected final int GradientX(int x, int y) {
-        return getGrayPoint(x , y ) - getGrayPoint(x + 1, y+1)
-                + getGrayPoint(x + 1, y ) - getGrayPoint(x , y +1);
+        return getGrayPoint(x, y) - getGrayPoint(x + 1, y + 1)
+                + getGrayPoint(x + 1, y) - getGrayPoint(x, y + 1);
     }// 计算像素点(x,y)X方向上的梯度值
+
     // 算子 计算 点(x,y)处的y方向梯度大小
 // protected final int GradientY(int x, int y) {
 //  return getGrayPoint(x - 1, y - 1) + 2*getGrayPoint(x, y - 1)
@@ -90,12 +108,13 @@ public class RobertsEdgeDetect {
             e.printStackTrace();
         }
     }
+
     public static void main(String[] args) {
-        RobertsEdgeDetect test = new RobertsEdgeDetect(50);//100
-        String imageName = "C:\\Users\\0143932\\Downloads\\kkkk.jpg";
-        String desImageName = "C:\\Users\\0143932\\Downloads\\robbert.jpg";
+        RobertsEdgeDetect test = new RobertsEdgeDetect(30);//100
+        String imageName = "C:\\Users\\0143932\\Downloads\\leaf.jpg";
+        String desImageName = "C:\\Users\\0143932\\Downloads\\ttt2.jpg";
         try {
-            test.readImage(imageName);
+            test.readImage(NarrowImage.zoomImage(imageName,0,0));
         } catch (IOException e) {
             e.printStackTrace();
         }

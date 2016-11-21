@@ -35,16 +35,29 @@ public class NarrowImage {
             //压缩计算
             float resizeTimes = 0.3f;  /*这个参数是要转化成的倍数,如果是1就是转化成1倍*/
 
-            /* 调整后的图片的宽度和高度 */
-            int toWidth = (int) (width * resizeTimes);
-            int toHeight = (int) (height * resizeTimes);
+            int toWidth = 0;
+            int toHeight = 0;
+
+            if(newHeight > 0){
+                toHeight = newHeight;
+            }else{
+               /* 调整后的图片的宽度和高度 */
+                toHeight = (int) (height * resizeTimes);
+            }
+
+            if(newWidth > 0){
+                toWidth = newWidth;
+            }else{
+               /* 调整后的图片的宽度和高度 */
+                toWidth = (int) (width * resizeTimes);
+            }
 
             /* 新生成结果图片 */
-            result = new BufferedImage(newWidth, newHeight,
+            result = new BufferedImage(toWidth, toHeight,
                     BufferedImage.TYPE_INT_RGB);
 
             result.getGraphics().drawImage(
-                    im.getScaledInstance(newWidth, newHeight,
+                    im.getScaledInstance(toWidth, toHeight,
                             java.awt.Image.SCALE_SMOOTH), 0, 0, null);
 
 
