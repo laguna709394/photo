@@ -108,18 +108,19 @@ public class Convolution {
 
     public static void main(String[] str) throws IOException {
         String imageName = "C:\\Users\\0143932\\Downloads\\xxx.png";
-        String destImage = "C:\\Users\\0143932\\Downloads\\xxx2.png";
-        File srcfile = new File(imageName);
-        if (!srcfile.exists()) {
-            System.out.println("文件不存在");
-        }
-        int[][] kernel = new int[5][5];
-        kernel[0] = new int[]{-1,0,0,0,0};
-        kernel[1] = new int[]{0,-2,0,0,0};
-        kernel[2] = new int[]{0,0,6,0,0};
-        kernel[3] = new int[]{0,0,0,-2,0};
-        kernel[4] = new int[]{0,0,0,0,-1};
-        BufferedImage im = ImageIO.read(srcfile);
-        Convolution.convolution(im,kernel,destImage);
+        String destImage1 = "C:\\Users\\0143932\\Downloads\\xxx1.png";
+        String destImage2 = "C:\\Users\\0143932\\Downloads\\xxx2.png";
+        String destImage3 = "C:\\Users\\0143932\\Downloads\\xxx3.png";
+        AvrFilter.avrFiltering(imageName, destImage1, "jpg");
+        MedianFilter.medianFiltering(imageName, destImage2, "jpg");
+        SnnFilter.snnFiltering(imageName, destImage3, "jpg");
+//        int[][] kernel = new int[5][5];
+//        kernel[0] = new int[]{-1,0,0,0,0};
+//        kernel[1] = new int[]{0,-2,0,0,0};
+//        kernel[2] = new int[]{0,0,6,0,0};
+//        kernel[3] = new int[]{0,0,0,-2,0};
+//        kernel[4] = new int[]{0,0,0,0,-1};
+//        BufferedImage im = Common.readImg(imageName);
+//        Convolution.convolution(im,kernel,destImage);
     }
 }
