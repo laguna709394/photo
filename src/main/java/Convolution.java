@@ -15,13 +15,14 @@ public class Convolution {
     }
 
     public static void convolution(BufferedImage bi, int[][] kernel, String destImage){
-        int imageData[] = bi.getRGB(0, 0, bi.getWidth(), bi.getHeight(), null, 0,bi.getWidth());
         //滤波器大小
         int kx = kernel.length;
         int ky = kernel[0].length;
         //图像大小
         int y = bi.getHeight();
         int x = bi.getWidth();
+
+        int imageData[] = new int[x*y];
 
         int xCenter = kx/2;
         int yCenter = ky/2;
@@ -44,24 +45,20 @@ public class Convolution {
                         sPixel[kn][km] = allPixel[n+kn][m+km];
                     }
                 }
-                int oldPixel = allPixel[n+xCenter][m+yCenter];
                 int newPixel = generalNewPixel(sPixel, kernel);
-                int oldR = (oldPixel & 0xff0000) >> 16;
-                int oldG = (oldPixel & 0xff00) >> 8;
-                int oldB = (oldPixel & 0xff);
-                oldR += newPixel;
-                oldG += newPixel;
-                oldB += newPixel;
-                newPixel = (255 << 24) | (oldR << 16) | (oldG <<8 )| oldB;
-                bi.setRGB(n+xCenter, m+yCenter,newPixel);
+                imageData[n+xCenter+(m+yCenter)*x] = newPixel;
             }
         }
 
 //        printPixel(allPixel);
 //        setNewPxels(bi, allPixel);
+//        bi.setRGB(n+xCenter, m+yCenter,newPixel);
+        BufferedImage img = new BufferedImage(x, y,BufferedImage.TYPE_INT_RGB);
+        img.setRGB(0, 0, x, y, imageData, 0, x);
+        img.flush();
         File skinImageOut = new File(destImage);
         try {
-            ImageIO.write(bi, "jpg", skinImageOut);
+            ImageIO.write(img, "jpg", skinImageOut);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -83,16 +80,29 @@ public class Convolution {
 
     //计算卷积核
     public static int generalNewPixel(int[][] sPixel, int[][] kernel){
-        int[][] newPixel = sPixel;
         int x = sPixel.length;
         int y = sPixel[0].length;
         int newPixelKernel = 0;
+        int r = 0,g = 0, b = 0;
         for(int xx = 0; xx < x; xx++){
             for(int yy = 0; yy < y; yy++){
-                newPixelKernel += sPixel[xx][yy] * kernel[xx][yy];
+                int oldPixel = sPixel[xx][yy];
+                int kenerlValue = kernel[xx][yy];
+                int oldR = (oldPixel & 0xff0000) >> 16;
+                int oldG = (oldPixel & 0xff00) >> 8;
+                int oldB = (oldPixel & 0xff);
+                r += oldR * kenerlValue;
+                g += oldG * kenerlValue;
+                b += oldB * kenerlValue;
             }
         }
-
+        newPixelKernel = (255 << 24) | (r << 16) | (g <<8 )| b;
+//        if(newPixelKernel > 255){
+//            newPixelKernel = 255;
+//        }
+//        if(newPixelKernel < 0){
+//            newPixelKernel = Math.abs(newPixelKernel);
+//        }
         return newPixelKernel;
     }
 
@@ -103,10 +113,12 @@ public class Convolution {
         if (!srcfile.exists()) {
             System.out.println("文件不存在");
         }
-        int[][] kernel = new int[3][3];
-        kernel[0] = new int[]{-1,-1,-1};
-        kernel[1] = new int[]{-1,9,-1};
-        kernel[2] = new int[]{-1,-1,-1};
+        int[][] kernel = new int[5][5];
+        kernel[0] = new int[]{-1,0,0,0,0};
+        kernel[1] = new int[]{0,-2,0,0,0};
+        kernel[2] = new int[]{0,0,6,0,0};
+        kernel[3] = new int[]{0,0,0,-2,0};
+        kernel[4] = new int[]{0,0,0,0,-1};
         BufferedImage im = ImageIO.read(srcfile);
         Convolution.convolution(im,kernel,destImage);
     }
