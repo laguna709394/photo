@@ -313,6 +313,6 @@ public class CannyEdgeFilter extends AbstractBufferedImageOp {
 
     public static void main(String[] str){
         CannyEdgeFilter cef = new CannyEdgeFilter();
-        Common.writeImg(cef.filter(Common.readImg("C:\\Users\\0143932\\Downloads\\xxx.png"),null),"jpg","C:\\Users\\0143932\\Downloads\\xxx1.jpg");
+        Common.writeImg(cef.filter(Common.readImg("e:\\test\\at10.bmp"),null),"jpg","e:\\test\\xxx.bmp");
     }
 }
