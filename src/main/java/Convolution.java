@@ -15,53 +15,44 @@ public class Convolution {
     }
 
     public static void convolution(BufferedImage bi, int[][] kernel, String destImage){
+
+    }
+
+    public static void filte(BufferedImage bi, int[][] kernel, String destImage){
         //滤波器大小
         int kx = kernel.length;
         int ky = kernel[0].length;
         //图像大小
-        int y = bi.getHeight();
-        int x = bi.getWidth();
+        int height = bi.getHeight();
+        int width = bi.getWidth();
 
-        int imageData[] = new int[x*y];
+        int imageData[] = new int[height*width];
 
-        int xCenter = kx/2;
-        int yCenter = ky/2;
+        for(int i = 0; i < height; i++){
+            int fi = i - 1;
+            //边界判断
+            if(fi < 0){
+                fi = 0;
+            }
+            for(int j = 0; j < width; j++){
+                int fj = j - 1;
+                //边界判断
+                if(fj < 0){
+                    fj = 0;
+                }
 
-        //图片所有像素转化为2D数组
-//        int[][] allPixel = new int[x][y];
-//        for(int i=0; i<x; i++) {
-//            for(int j=0; j<y; j++) {
-//                allPixel[i][j] = bi.getRGB(i, j);
-//            }
-//        }
-//
-//        //获取每个像素点的卷积核
-//        for(int n = 0; n < x - kx; n++){
-//            for(int m = 0; m < y - ky; m++){
-//                //取出像素块
-//                int[][] sPixel = new int[kx][ky];
-//                for(int kn = 0; kn < kx; kn++){
-//                    for(int km = 0; km < ky; km++){
-//                        sPixel[kn][km] = allPixel[n+kn][m+km];
-//                    }
-//                }
-//                int newPixel = generalNewPixel(sPixel, kernel);
-//                imageData[n+xCenter+(m+yCenter)*x] = newPixel;
-//            }
-//        }
-
-//        printPixel(allPixel);
-//        setNewPxels(bi, allPixel);
-//        bi.setRGB(n+xCenter, m+yCenter,newPixel);
-        BufferedImage img = new BufferedImage(x, y,BufferedImage.TYPE_INT_RGB);
-        img.setRGB(0, 0, x, y, imageData, 0, x);
-        img.flush();
-        File skinImageOut = new File(destImage);
-        try {
-            ImageIO.write(img, "jpg", skinImageOut);
-        } catch (IOException e) {
-            e.printStackTrace();
+            }
         }
+
+//        BufferedImage img = new BufferedImage(x, y,BufferedImage.TYPE_INT_RGB);
+//        img.setRGB(0, 0, x, y, imageData, 0, x);
+//        img.flush();
+        File skinImageOut = new File(destImage);
+//        try {
+//            ImageIO.write(img, "jpg", skinImageOut);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public static void printPixel(int[][] sPixel){
