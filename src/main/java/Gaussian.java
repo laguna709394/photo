@@ -3,22 +3,22 @@ import java.awt.image.BufferedImage;
 
 /**
  * Created by ksy on 2016/11/25.
- * ¸ßË¹Ä£ºý
+ * ï¿½ï¿½Ë¹Ä£ï¿½ï¿½
  */
 public class Gaussian {
 
     /**
-     * Ò»Î¬¸ßË¹º¯Êý
+     * Ò»Î¬ï¿½ï¿½Ë¹ï¿½ï¿½ï¿½ï¿½
      * @param n
      * @param sigma
      * @return
      */
-    private static float[] get1DKernalData(int n, float sigma){
+    public static float[] get1DKernalData(int n, float sigma){
         float sigma2Square = 2 * sigma * sigma;
         float pi2 = (float)Math.PI * 2;
-        //2pi ¿ª·Å³ËÒÔsigma
+        //2pi ï¿½ï¿½ï¿½Å³ï¿½ï¿½ï¿½sigma
         float pi2SqrtSigma = (float)Math.sqrt(pi2) * sigma;
-        //½á¹ûÊý×é´óÐ¡
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡
         int size = 2 * n + 1;
         float[] kernel = new float[size];
         for(int i = -n, ki = 0; i <= n; i++, ki++){
@@ -30,22 +30,22 @@ public class Gaussian {
     }
 
     /**
-     * ¶þÎ¬¸ßË¹º¯Êý
+     * ï¿½ï¿½Î¬ï¿½ï¿½Ë¹ï¿½ï¿½ï¿½ï¿½
      * @param n
      * @param sigma
      * @return
      */
-    private static float[][] get2DKernalData(int n, float sigma){
+    public static float[][] get2DKernalData(int n, float sigma){
         float sigma2Square = 2 * sigma * sigma;
         float pi2 = (float)Math.PI * 2;
-        //2pi ¿ª·Å³ËÒÔsigma
+        //2pi ï¿½ï¿½ï¿½Å³ï¿½ï¿½ï¿½sigma
         float pi2SqrtSigma = (float)Math.sqrt(pi2) * sigma;
-        //½á¹ûÊý×é´óÐ¡
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡
         int size = 2 * n + 1;
-        //¶þÎ¬Êý×é½á¹û
+        //ï¿½ï¿½Î¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         float[][] kernel = new float[size][size];
         for(int i = -n, ki = 0; i <= n; i++, ki++){
-            for(int j = -n, kj = 0; i <= n; i++, kj++){
+            for(int j = -n, kj = 0; j <= n; j++, kj++){
                 float kSquare = i * i;
                 float jSquare = j * j;
                 kernel[ki][kj] = (float)Math.exp(-(kSquare + jSquare) / sigma2Square)/pi2SqrtSigma;
@@ -55,7 +55,7 @@ public class Gaussian {
         return kernel;
     }
 
-    //¸ßË¹¾í»ý
+    //ï¿½ï¿½Ë¹ï¿½ï¿½ï¿½
     public static int[] gaussian(BufferedImage bi, int n){
         float[][] kernel = get2DKernalData(n,1);
         int height = bi.getHeight();
@@ -64,7 +64,7 @@ public class Gaussian {
         int[] outPixels = new int[width*height];
         Common.getRGB(bi, 0, 0, width, height, inPixels);
         int index = 0;
-        // ¸ßË¹Ä£ºý -»Ò¶ÈÍ¼Ïñ
+        // ï¿½ï¿½Ë¹Ä£ï¿½ï¿½ -ï¿½Ò¶ï¿½Í¼ï¿½ï¿½
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
                 index = row * width + col;
