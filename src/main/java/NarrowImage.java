@@ -69,7 +69,7 @@ public class NarrowImage {
 
     }
 
-    public static boolean writeHighQuality(BufferedImage im, String fileFullPath) {
+    public static BufferedImage writeHighQuality(BufferedImage im, String fileFullPath) {
         try {
                 /*输出到文件流*/
             FileOutputStream newimage = new FileOutputStream(fileFullPath);
@@ -80,9 +80,9 @@ public class NarrowImage {
             encoder.encode(im, jep);
                /*近JPEG编码*/
             newimage.close();
-            return true;
+            return im;
         } catch (Exception e) {
-            return false;
+            return null;
         }
     }
 

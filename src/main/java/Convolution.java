@@ -37,55 +37,65 @@ public class Convolution {
 
         for(int i = 0; i < height; i++){
             for(int j = 0; j < width; j++){
-                int pixelSum = 0;
+                double weightSum = 0.0;
+                double redSum = 0,blueSum = 0,greenSum = 0;
                 //遍历中心店周围所有像素
                 for(int m = -hn; m <= hn; m++){
+                    int ri = i + m;
+                    //边界判断
+                    if(ri < 0){
+                        //是否复制边缘
+                        if(retainBoarder){
+                            ri = i;
+                        }else{
+                            ri = 0;
+                        }
+                    }else if(ri >= height){
+                        if(retainBoarder){
+                            ri = height - 1;
+                        }else{
+                            ri = 0;
+                        }
+                    }
                     for(int n = -wn; n <= wn; n++){
-                        int ri = i + m;
                         int rj = j + n;
                         int ki = hn + m;
                         int kj = wn + n;
-                        boolean isDrop = false;
-                        //边界判断
-                        if(ri < 0){
-                            //是否复制边缘
-                            if(retainBoarder){
-                                ri = i;
-                            }else{
-                                isDrop = true;
-                            }
-                        }else if(ri >= height){
-                            if(retainBoarder){
-                                ri = height - 1;
-                            }else{
-                                isDrop = true;
-                            }
-                        }
 
                         if(rj < 0){
                             if(retainBoarder){
                                 rj = j;
                             }else{
-                                isDrop = true;
+                                rj = 0;
                             }
                         }else if(rj >= width){
                             if(retainBoarder){
                                 rj = width - 1;
                             }else{
-                                isDrop = true;
+                                rj = 0;
                             }
                         }
 //                        System.out.println("i:"+i+",j:"+j+",ri:"+ri+",rj:"+rj+"ki:"+ki+",kj:"+kj);
                         //获取图片和卷积核的像素
                         int pixel = 0;
-                        if(!isDrop){
-                            pixel = imageData[ri * width + rj];
-                        }
+                        pixel = imageData[ri * width + rj];
                         float kpixel = kernel[ki][kj];
-                        pixelSum += pixel * kpixel;
+                        int r = (pixel >> 16) & 0xff;
+                        int g = (pixel >> 8) & 0xff;
+                        int b = pixel & 0xff;
+                        redSum += r * kpixel;
+                        greenSum += g * kpixel;
+                        blueSum += b * kpixel;
+                        weightSum += kpixel;
+//                        pixelSum += pixel * kpixel;
+//                        System.out.println("pixel:" + pixel + ",kpixel:"+kpixel+",sum:"+pixelSum);
                     }
                 }
-                imageData[i * width + j] = pixelSum;
+                int red = (int)(redSum / weightSum);
+                int green = (int)(greenSum / weightSum);
+                int blue = (int)(blueSum / weightSum);
+                int pixel = (255 << 24) | (red << 16) | (green <<8 )| blue;
+                imageData[i * width + j] = pixel;
             }
         }
 
@@ -155,6 +165,8 @@ public class Convolution {
 //        kernel[3] = new int[]{16,17,18,19,20};
 //        kernel[4] = new int[]{21,22,23,24,25};
         BufferedImage im = Common.readImg(imageName);
+//        im = ColorToRGB.convertColor(im);
+//        Common.writeImg(im,"jpg","D:\\test\\leafa.jpg");
         Convolution.convolution(im, Gaussian.get2DKernalData(1,1), destImage1, false);
 //        Common.setRGB(im,0, 0, im.getWidth(), im.getHeight(), Gaussian.gaussian(im,3) );
         //TODO 差归一化

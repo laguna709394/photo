@@ -62,10 +62,11 @@ public class CaculateGray {
         String outputFolder1 = photo1Path + "temp" + photo1Name;
         String iutputFolder2 = photo2Path + photo2Name;
         String outputFolder2 = photo2Path + "temp" + photo2Name;
-        NarrowImage.writeHighQuality(NarrowImage.zoomImage(iutputFolder1, 16, 16), outputFolder1);
-        NarrowImage.writeHighQuality(NarrowImage.zoomImage(iutputFolder2, 16, 16), outputFolder2);
-        BufferedImage img1 = ColorToRGB.convertColor(outputFolder1);
-        BufferedImage img2 = ColorToRGB.convertColor(outputFolder2);
+        BufferedImage im1 = NarrowImage.writeHighQuality(NarrowImage.zoomImage(iutputFolder1, 16, 16), outputFolder1);
+        BufferedImage im2 = NarrowImage.writeHighQuality(NarrowImage.zoomImage(iutputFolder2, 16, 16), outputFolder2);
+
+        BufferedImage img1 = ColorToRGB.convertColor(im1);
+        BufferedImage img2 = ColorToRGB.convertColor(im2);
         int[] result1 = CaculateGray.calculate(img1);
         int[] result2 = CaculateGray.calculate(img2);
         int result3 = 0;

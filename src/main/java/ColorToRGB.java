@@ -22,9 +22,7 @@ public class ColorToRGB {
 
     }
 
-    public static BufferedImage convertColor(String path) throws IOException {
-        BufferedImage bufferedImage
-                = ImageIO.read(new File(path));
+    public static BufferedImage convertColor(BufferedImage bufferedImage) throws IOException {
         BufferedImage grayImage =
                 new BufferedImage(bufferedImage.getWidth(),
                         bufferedImage.getHeight(),
@@ -38,13 +36,11 @@ public class ColorToRGB {
                 final int g = (color >> 8) & 0xff;
                 final int b = color & 0xff;
                 int gray = (int) (0.3 * r + 0.59 * g + 0.11 * b);;
-//                System.out.println(i + " : " + j + " " + gray);
                 int newPixel = colorToRGB(255, gray, gray, gray);
                 grayImage.setRGB(i, j, newPixel);
             }
         }
-//        File newFile = new File(path);
-//        ImageIO.write(grayImage, "jpg", newFile);
+
         return grayImage;
     }
 
